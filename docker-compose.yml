@@ -1,0 +1,22 @@
+version: '3'
+services:
+  web:
+    build:
+      context: .
+    image: cloudsiem:latest
+    tmpfs:
+        - /opt/splunk/var/run
+        - /opt/splunk/var/spool
+        - /tmp
+    volumes:
+        - ./local/splunk_etc:/opt/splunk/etc
+    ports:
+     - "8000:8000"
+     - "8089:8089"
+    environment:
+     - APP=SPLUNK
+     - ROLE=SPLUNK_IDXC_MASTER
+     - SPLUNK_GEN_PASS4YM=AAAHWUsaD6HEdz0ThbXfQ6pYSQ3n267l1VQKGNbS
+     - SPLUNK_ADMIN_USER=admin
+     - SPLUNK_ADMIN_PASSWORD=Changed@11
+     - SPLUNK_IDXC_PASS4YM=RTZHWUsaD6HEdz0ThbXfQ6pYSQ3n267l1VQKGNbS

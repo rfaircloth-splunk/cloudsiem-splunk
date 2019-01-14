@@ -1,0 +1,55 @@
+#!/sbin/openrc-run
+
+
+command=/opt/splunk/bin/splunk
+command_args="_internal_launch_under_systemd --accept-license --no-prompt --answer-yes"
+name="Splunk Daemon"
+
+
+# depend() {
+# }
+
+start_pre() {
+
+  sh -c "echo 'starting' > ${CONTAINER_ARTIFACT_DIR}/splunk-container.state"
+  tar -zxvf /opt/splunk/splunk_etc.tgz -C /opt
+
+  echo Starting Configuration
+  echo APP=$APP ROLE=$ROLE
+  if [ "$APP" = "SPLUNK" ]; then
+    if [ ! -f /opt/splunk/etc/passwd ]; then
+      echo setting admin credentials
+      crudini --set /opt/splunk/etc/system/local/user-seed.conf user_info USERNAME $SPLUNK_ADMIN_USER
+      crudini --set /opt/splunk/etc/system/local/user-seed.conf user_info PASSWORD $SPLUNK_ADMIN_PASSWORD
+    fi
+    #Disable UI checking for updated versions
+    crudini --set /opt/splunk/etc/system/local/web.conf settings updateCheckerBaseURL 0
+
+    crudini --set /opt/splunk/etc/system/local/server.conf general pass4SymmKey $SPLUNK_GEN_PASS4YM
+
+    if [ "$ROLE" = "SPLUNK_IDXC_MASTER" ]; then
+        crudini --set /opt/splunk/etc/system/local/server.conf general site site0
+
+        crudini --set /opt/splunk/etc/system/local/server.conf clustering mode master
+        crudini --set /opt/splunk/etc/system/local/server.conf clustering pass4SymmKey $SPLUNK_IDXC_PASS4YM
+        crudini --set /opt/splunk/etc/system/local/server.conf clustering cluster_label $main
+        crudini --set /opt/splunk/etc/system/local/server.conf clustering summary_replication true
+        crudini --set /opt/splunk/etc/system/local/server.conf clustering multisite true
+        crudini --set /opt/splunk/etc/system/local/server.conf clustering available_sites "site1, site2, site3"
+        crudini --set /opt/splunk/etc/system/local/server.conf clustering site_replication_factor "origin:2, total:3"
+        crudini --set /opt/splunk/etc/system/local/server.conf clustering site_search_factor "origin:1, total:2"
+        crudini --set /opt/splunk/etc/system/local/server.conf clustering replication_factor 3
+        crudini --set /opt/splunk/etc/system/local/server.conf clustering search_factor 2
+    fi
+
+  fi
+
+
+}
+
+# start() {
+#
+# }
+
+# stop() {
+#}
