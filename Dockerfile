@@ -33,7 +33,7 @@ RUN mkdir -p ${CONTAINER_ARTIFACT_DIR}
 
 
 # Setup users and download Splunk
-COPY ./splunk/splunk /opt/splunk
+COPY ./splunk /opt/splunk
 
 RUN groupadd -r splunk \
     && useradd -r -m -g splunk splunk \
