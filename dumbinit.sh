@@ -51,7 +51,7 @@ if [ "$APP" = "SPLUNK" ]; then
 
   crudini --set /opt/splunk/etc/system/local/server.conf general pass4SymmKey $SPLUNK_GEN_PASS4SYM
 
-  if [ "$ROLE" = "SPLUNK_IDXC_MASTER" ]; then
+  if [ "$ROLE" = "SPLUNK-IDXC-MASTER" ]; then
       crudini --set /opt/splunk/etc/system/local/server.conf general site site0
 
       crudini --set /opt/splunk/etc/system/local/server.conf clustering mode master
