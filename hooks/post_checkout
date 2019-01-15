@@ -24,6 +24,8 @@ SPLUNK_LINUX_BUILD_URL = https://download.splunk.com/products/${SPLUNK_PRODUCT}/
 
 
 echo "Downloading Splunk and validating the checksum at: ${SPLUNK_BUILD_URL}"
+apt-get update
+apt-get install wget curl -y
 wget -qO ${SPLUNK_FILENAME} ${SPLUNK_BUILD_URL}
 wget -qO ${SPLUNK_FILENAME}.sha512 ${SPLUNK_BUILD_URL}.sha512
 sha512sum -c ${SPLUNK_FILENAME}.sha512
