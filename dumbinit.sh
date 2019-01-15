@@ -51,8 +51,11 @@ if [ "$APP" = "SPLUNK" ]; then
 
   crudini --set /opt/splunk/etc/system/local/server.conf general pass4SymmKey $SPLUNK_GEN_PASS4SYM
 
+  if [ ! "$ROLE" = "SPLUNK-IDXC-MASTER" ]; then
+    crudini --set /opt/splunk/etc/system/local/server.conf general site site0
+  fi
+
   if [ "$ROLE" = "SPLUNK-IDXC-MASTER" ]; then
-      crudini --set /opt/splunk/etc/system/local/server.conf general site site0
 
       crudini --set /opt/splunk/etc/system/local/server.conf clustering mode master
       crudini --set /opt/splunk/etc/system/local/server.conf clustering pass4SymmKey $SPLUNK_IDXC_PASS4SYM
@@ -64,6 +67,25 @@ if [ "$APP" = "SPLUNK" ]; then
       crudini --set /opt/splunk/etc/system/local/server.conf clustering site_search_factor "origin:1, total:2"
       crudini --set /opt/splunk/etc/system/local/server.conf clustering replication_factor 3
       crudini --set /opt/splunk/etc/system/local/server.conf clustering search_factor 2
+  fi
+
+  if [ "$ROLE" = "SPLUNK-IDXC-PEER" ]; then
+    crudini --set /opt/splunk/etc/system/local/web.conf settings startwebserver false
+
+    crudini --set /opt/splunk/etc/system/local/server.conf general site site0
+
+
+    crudini --set /opt/splunk/etc/system/local/server.conf clustering mode slave
+    crudini --set /opt/splunk/etc/system/local/server.conf clustering multisite true
+    crudini --set /opt/splunk/etc/system/local/server.conf clustering master_uri $SPLUNK_IDXC_MASTER
+    crudini --set /opt/splunk/etc/system/local/server.conf clustering pass4SymmKey $SPLUNK_IDXC_PASS4SYM
+
+    crudini --set /opt/splunk/etc/system/local/server.conf "replication_port-ssl://9887" disabled false
+    crudini --set /opt/splunk/etc/system/local/server.conf "replication_port-ssl://9887" serverCert $SPLUNK_HOME/etc/auth/server.pem
+    crudini --set /opt/splunk/etc/system/local/server.conf "replication_port-ssl://9887" password password
+    crudini --set /opt/splunk/etc/system/local/server.conf "replication_port-ssl://9887" requireClientCert false
+
+
   fi
 
 fi
