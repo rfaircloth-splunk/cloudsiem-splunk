@@ -42,7 +42,7 @@ RUN groupadd -r splunk \
     && rm -Rf /opt/splunk/etc/* \
     && chown splunk:splunk /opt/splunk/splunk_etc.tgz
 
-COPY [ "common-files/entrypoint.sh", "common-files/checkstate.sh", "common-files/createdefaults.py","dumbinit.sh", "/sbin/" ]
+COPY [ "common-files/checkstate.sh","dumbinit.sh", "/sbin/" ]
 EXPOSE 4001 8000 8065 8088 8089 8191 9887 9997
 
 VOLUME [ "/opt/splunk/etc", "/opt/splunk/var" ]
