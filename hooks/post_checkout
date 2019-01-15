@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 # Copyright 2018 Splunk
 
@@ -15,12 +15,12 @@
 # limitations under the License.
 #
 
-SPLUNK_PRODUCT = splunk
-SPLUNK_VERSION = 7.2.3
-SPLUNK_BUILD = 06d57c595b80
-SPLUNK_ARCH = x86_64
-SPLUNK_LINUX_FILENAME = splunk-$SPLUNK_VERSION-$SPLUNK_BUILD-Linux-$SPLUNK_ARCH.tgz
-SPLUNK_LINUX_BUILD_URL = https://download.splunk.com/products/$SPLUNK_PRODUCT/releases/$SPLUNK_VERSION/linux/$SPLUNK_LINUX_FILENAME
+export SPLUNK_PRODUCT = splunk
+export SPLUNK_VERSION = 7.2.3
+export SPLUNK_BUILD = 06d57c595b80
+export SPLUNK_ARCH = x86_64
+export SPLUNK_LINUX_FILENAME = splunk-$SPLUNK_VERSION-$SPLUNK_BUILD-Linux-$SPLUNK_ARCH.tgz
+export SPLUNK_LINUX_BUILD_URL = https://download.splunk.com/products/$SPLUNK_PRODUCT/releases/$SPLUNK_VERSION/linux/$SPLUNK_LINUX_FILENAME
 
 
 echo "Downloading Splunk and validating the checksum at: $SPLUNK_BUILD_URL"
