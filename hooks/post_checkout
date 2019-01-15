@@ -27,4 +27,4 @@ echo "Downloading Splunk and validating the checksum at: ${SPLUNK_BUILD_URL}"
 wget -qO ${SPLUNK_FILENAME} ${SPLUNK_BUILD_URL}
 wget -qO ${SPLUNK_FILENAME}.sha512 ${SPLUNK_BUILD_URL}.sha512
 sha512sum -c ${SPLUNK_FILENAME}.sha512
-tar -zxfv ${SPLUNK_FILENAME} -C /opt
+tar -zxfv ${SPLUNK_FILENAME}
