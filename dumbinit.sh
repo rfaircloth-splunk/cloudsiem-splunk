@@ -67,13 +67,23 @@ if [ "$APP" = "SPLUNK" ]; then
       crudini --set /opt/splunk/etc/system/local/server.conf clustering site_search_factor "origin:1, total:2"
       crudini --set /opt/splunk/etc/system/local/server.conf clustering replication_factor 3
       crudini --set /opt/splunk/etc/system/local/server.conf clustering search_factor 2
+
+      crudini --set /opt/splunk/etc/master-apps/_cluster/indexes.conf default repFactor auto
+      crudini --set /opt/splunk/etc/master-apps/_cluster/indexes.conf _introspection repFactor 0
+
+      crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf "splunktcp-ssl://9997" disabled false
+      crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL serverCert $SPLUNK_HOME/etc/auth/server.pem
+      crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL requireClientCert false
+      crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL sslPassword password
+
   fi
 
   if [ "$ROLE" = "SPLUNK-IDXC-SLAVE" ]; then
     crudini --set /opt/splunk/etc/system/local/web.conf settings startwebserver false
 
-    crudini --set /opt/splunk/etc/system/local/server.conf general site site$SPLUNK_IDXC_SITE
+    crudini --set /opt/splunk/etc/system/local/limits.conf scheduler saved_searches_disabled true
 
+    crudini --set /opt/splunk/etc/system/local/server.conf general site site$SPLUNK_IDXC_SITE
 
     crudini --set /opt/splunk/etc/system/local/server.conf clustering mode slave
     crudini --set /opt/splunk/etc/system/local/server.conf clustering multisite true
@@ -81,10 +91,7 @@ if [ "$APP" = "SPLUNK" ]; then
     crudini --set /opt/splunk/etc/system/local/server.conf clustering pass4SymmKey $SPLUNK_IDXC_PASS4SYM
 
     crudini --set /opt/splunk/etc/system/local/server.conf "replication_port-ssl://9887" disabled false
-    crudini --set /opt/splunk/etc/system/local/server.conf "replication_port-ssl://9887" serverCert $SPLUNK_HOME/etc/auth/server.pem
-    crudini --set /opt/splunk/etc/system/local/server.conf "replication_port-ssl://9887" password password
     crudini --set /opt/splunk/etc/system/local/server.conf "replication_port-ssl://9887" requireClientCert false
-
 
   fi
 
