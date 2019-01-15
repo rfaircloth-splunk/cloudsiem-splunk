@@ -68,8 +68,9 @@ if [ "$APP" = "SPLUNK" ]; then
       crudini --set /opt/splunk/etc/system/local/server.conf clustering replication_factor 3
       crudini --set /opt/splunk/etc/system/local/server.conf clustering search_factor 2
 
-      crudini --set /opt/splunk/etc/master-apps/_cluster/indexes.conf default repFactor auto
-      crudini --set /opt/splunk/etc/master-apps/_cluster/indexes.conf _introspection repFactor 0
+      echo [default] >/opt/splunk/etc/master-apps/_cluster/local/indexes.conf
+      crudini --set /opt/splunk/etc/master-apps/_cluster/local/indexes.conf "default" repFactor auto
+      crudini --set /opt/splunk/etc/master-apps/_cluster/local/indexes.conf _introspection repFactor 0
 
       crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf "splunktcp-ssl://9997" disabled false
       crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL serverCert $SPLUNK_HOME/etc/auth/server.pem
