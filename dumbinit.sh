@@ -33,30 +33,38 @@ trap "echo USR2" USR2
 #Upgrade ETC
 gosu splunk tar -zxf /opt/splunk/splunk_etc.tgz -C /opt
 
-if [ -d "/opt/splunk/inject/ca-certificates" ]; then
-  # Control will enter here if $DIRECTORY exists.
-  cp -R /opt/splunk/inject/ca-certificates/* /usr/local/share/ca-certificates/
-  update-ca-certificates
+sh -c "echo 'starting' > ${CONTAINER_ARTIFACT_DIR}/splunk-container.state"
+tar -zxvf /opt/splunk/splunk_etc.tgz -C /opt
+
+echo Starting Configuration
+echo APP=$APP ROLE=$ROLE
+if [ "$APP" = "SPLUNK" ]; then
+  if [ ! -f /opt/splunk/etc/passwd ]; then
+    echo setting admin credentials
+    crudini --set /opt/splunk/etc/system/local/user-seed.conf user_info USERNAME $SPLUNK_ADMIN_USER
+    crudini --set /opt/splunk/etc/system/local/user-seed.conf user_info PASSWORD $SPLUNK_ADMIN_PASSWORD
+  fi
+  #Disable UI checking for updated versions
+  crudini --set /opt/splunk/etc/system/local/web.conf settings updateCheckerBaseURL 0
+
+  crudini --set /opt/splunk/etc/system/local/server.conf general pass4SymmKey $SPLUNK_GEN_PASS4SYM
+
+  if [ "$ROLE" = "SPLUNK_IDXC_MASTER" ]; then
+      crudini --set /opt/splunk/etc/system/local/server.conf general site site0
+
+      crudini --set /opt/splunk/etc/system/local/server.conf clustering mode master
+      crudini --set /opt/splunk/etc/system/local/server.conf clustering pass4SymmKey $SPLUNK_IDXC_PASS4SYM
+      crudini --set /opt/splunk/etc/system/local/server.conf clustering cluster_label $main
+      crudini --set /opt/splunk/etc/system/local/server.conf clustering summary_replication true
+      crudini --set /opt/splunk/etc/system/local/server.conf clustering multisite true
+      crudini --set /opt/splunk/etc/system/local/server.conf clustering available_sites "site1, site2, site3"
+      crudini --set /opt/splunk/etc/system/local/server.conf clustering site_replication_factor "origin:2, total:3"
+      crudini --set /opt/splunk/etc/system/local/server.conf clustering site_search_factor "origin:1, total:2"
+      crudini --set /opt/splunk/etc/system/local/server.conf clustering replication_factor 3
+      crudini --set /opt/splunk/etc/system/local/server.conf clustering search_factor 2
+  fi
+
 fi
-
-crudini --del /opt/splunk/etc/system/local/inputs.conf default host
-crudini --del /opt/splunk/etc/system/local/server.conf general serverName
-
-crudini --set /opt/splunk/etc/system/local/server.conf sslConfig sslVerifyServerCert true
-crudini --set /opt/splunk/etc/system/local/server.conf sslConfig sslRootCAPath /etc/ssl/certs/ca-certificates.crt
-crudini --set /opt/splunk/etc/system/local/server.conf sslConfig sendStrictTransportSecurityHeader true
-mkdir -p /tmp/splunk/sslClientSessionPath
-crudini --set /opt/splunk/etc/system/local/server.conf sslConfig sslClientSessionPath /tmp/splunk/sslClientSessionPath
-crudini --set /opt/splunk/etc/system/local/server.conf sslConfig useSslClientSessionCache true
-#serverCert
-#sslPassword
-#dhFile
-
-crudini --set /opt/splunk/etc/system/local/web.conf settings enableSplunkWebSSL true
-crudini --set /opt/splunk/etc/system/local/web.conf settings simple_error_page = true
-#privKeyPath
-#serverCert
-#sslPassword
 
 chown -R splunk:splunk /opt/splunk
 gosu splunk /opt/splunk/bin/splunk start --accept-license --answer-yes --no-prompt
