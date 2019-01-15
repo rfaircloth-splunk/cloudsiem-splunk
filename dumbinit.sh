@@ -16,6 +16,8 @@
 set -e
 
 export SPLUNK_HOME=/opt/splunk
+APP=${APP^^}
+ROLE=${ROLE^^}
 
 splunkstop(){
 
