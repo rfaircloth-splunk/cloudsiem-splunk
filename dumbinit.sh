@@ -73,9 +73,10 @@ if [ "$APP" = "SPLUNK" ]; then
       crudini --set /opt/splunk/etc/master-apps/_cluster/local/indexes.conf _introspection repFactor 0
 
       crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf "splunktcp-ssl://9997" disabled false
-      crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL serverCert $SPLUNK_HOME/etc/auth/server.pem
+      crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL serverCert \$SPLUNK_HOME/etc/auth/server.pem
       crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL requireClientCert false
       crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL sslPassword password
+
 
   fi
 
@@ -93,7 +94,8 @@ if [ "$APP" = "SPLUNK" ]; then
 
     crudini --set /opt/splunk/etc/system/local/server.conf "replication_port-ssl://9887" disabled false
     crudini --set /opt/splunk/etc/system/local/server.conf "replication_port-ssl://9887" requireClientCert false
-
+    crudini --set /opt/splunk/etc/system/local/server.conf "replication_port-ssl://9887" serverCert \$SPLUNK_HOME/etc/auth/server.pem
+    crudini --set /opt/splunk/etc/system/local/server.conf "replication_port-ssl://9887" password password
   fi
 
 fi
