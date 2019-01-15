@@ -69,7 +69,7 @@ if [ "$APP" = "SPLUNK" ]; then
       crudini --set /opt/splunk/etc/system/local/server.conf clustering search_factor 2
   fi
 
-  if [ "$ROLE" = "SPLUNK-IDXC-PEER" ]; then
+  if [ "$ROLE" = "SPLUNK-IDXC-SLAVE" ]; then
     crudini --set /opt/splunk/etc/system/local/web.conf settings startwebserver false
 
     crudini --set /opt/splunk/etc/system/local/server.conf general site site$SPLUNK_IDXC_SITE
