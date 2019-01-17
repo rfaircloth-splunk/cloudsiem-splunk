@@ -33,9 +33,8 @@ trap "echo USR2" USR2
 
 
 #Upgrade ETC
-gosu splunk tar -zxf /opt/splunk/splunk_etc.tgz -C /opt
-
 sh -c "echo 'starting' > ${CONTAINER_ARTIFACT_DIR}/splunk-container.state"
+mkdir -p /opt/splunk/etc
 tar -zxvf /opt/splunk/splunk_etc.tgz -C /opt
 
 echo Starting Configuration
@@ -50,7 +49,6 @@ if [ "$APP" = "SPLUNK" ]; then
   crudini --set /opt/splunk/etc/system/local/web.conf settings updateCheckerBaseURL 0
 
   crudini --set /opt/splunk/etc/system/local/server.conf general pass4SymmKey $SPLUNK_GEN_PASS4SYM
-
 
   if [ "$ROLE" = "SPLUNK-IDXC-MASTER" ]; then
 
