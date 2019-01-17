@@ -78,6 +78,7 @@ if [ "$APP" = "SPLUNK" ]; then
   fi
 
   if [ "$ROLE" = "SPLUNK-IDXC-SLAVE" ]; then
+    mkdir -p /opt/splunk/var/indexes
     crudini --set /opt/splunk/etc/system/local/web.conf settings startwebserver false
 
     crudini --set /opt/splunk/etc/system/local/limits.conf scheduler saved_searches_disabled true
