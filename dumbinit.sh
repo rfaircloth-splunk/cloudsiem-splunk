@@ -54,7 +54,7 @@ if [ "$APP" = "SPLUNK" ]; then
 
     crudini --set /opt/splunk/etc/system/local/server.conf general site site0
 
-    crudini --set /opt/splunk/etc/system/local/outputs.conf indexer_discovery:cluster pass4SymmKey $SPLUNK_IDXC_PASS4SYM
+    crudini --set /opt/splunk/etc/system/local/outputs.conf indexer_discovery:cluster pass4SymmKey $SPLUNK_IDXC_DISCO_PASS4SYM
     crudini --set /opt/splunk/etc/system/local/outputs.conf indexer_discovery:cluster master_uri $SPLUNK_IDXC_MASTER
 
     crudini --set /opt/splunk/etc/system/local/outputs.conf tcpout:cluster indexerDiscovery cluster
@@ -83,7 +83,7 @@ if [ "$APP" = "SPLUNK" ]; then
       crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL requireClientCert false
       crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL sslPassword password
 
-      crudini --set /opt/splunk/etc/system/local/server.conf indexer_discovery pass4SymmKey $SPLUNK_IDXC_DISCOPASS4SYM
+      crudini --set /opt/splunk/etc/system/local/server.conf indexer_discovery pass4SymmKey $SPLUNK_IDXC_DISCO_PASS4SYM
 
 
   fi
