@@ -50,9 +50,18 @@ if [ "$APP" = "SPLUNK" ]; then
 
   crudini --set /opt/splunk/etc/system/local/server.conf general pass4SymmKey $SPLUNK_GEN_PASS4SYM
 
-  if [ "$ROLE" = "SPLUNK-IDXC-MASTER" ]; then
+  if [ ! "$ROLE" = "SPLUNK-IDXC-SLAVE" ]; then
 
-      crudini --set /opt/splunk/etc/system/local/server.conf general site site0
+    crudini --set /opt/splunk/etc/system/local/server.conf general site site0
+
+    crudini --set /opt/splunk/etc/system/local/server.conf indexer_discovery:cluster pass4SymmKey $SPLUNK_IDXC_PASS4SYM
+    crudini --set /opt/splunk/etc/system/local/server.conf indexer_discovery:cluster master_uri $SPLUNK_IDXC_MASTER
+
+    crudini --set /opt/splunk/etc/system/local/server.conf tcpout:cluster indexerDiscovery cluster
+    crudini --set /opt/splunk/etc/system/local/server.conf tcpout defaultGroup cluster
+
+  fi
+  if [ "$ROLE" = "SPLUNK-IDXC-MASTER" ]; then
 
       crudini --set /opt/splunk/etc/system/local/server.conf clustering mode master
       crudini --set /opt/splunk/etc/system/local/server.conf clustering pass4SymmKey $SPLUNK_IDXC_PASS4SYM
@@ -73,6 +82,8 @@ if [ "$APP" = "SPLUNK" ]; then
       crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL serverCert \$SPLUNK_HOME/etc/auth/server.pem
       crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL requireClientCert false
       crudini --set /opt/splunk/etc/master-apps/_cluster/local/inputs.conf SSL sslPassword password
+
+      crudini --set /opt/splunk/etc/system/local/server.conf indexer_discovery pass4SymmKey $SPLUNK_IDXC_DISCOPASS4SYM
 
 
   fi
