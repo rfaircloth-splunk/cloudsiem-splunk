@@ -54,11 +54,11 @@ if [ "$APP" = "SPLUNK" ]; then
 
     crudini --set /opt/splunk/etc/system/local/server.conf general site site0
 
-    crudini --set /opt/splunk/etc/system/local/server.conf indexer_discovery:cluster pass4SymmKey $SPLUNK_IDXC_PASS4SYM
-    crudini --set /opt/splunk/etc/system/local/server.conf indexer_discovery:cluster master_uri $SPLUNK_IDXC_MASTER
+    crudini --set /opt/splunk/etc/system/local/outputs.conf indexer_discovery:cluster pass4SymmKey $SPLUNK_IDXC_PASS4SYM
+    crudini --set /opt/splunk/etc/system/local/outputs.conf indexer_discovery:cluster master_uri $SPLUNK_IDXC_MASTER
 
-    crudini --set /opt/splunk/etc/system/local/server.conf tcpout:cluster indexerDiscovery cluster
-    crudini --set /opt/splunk/etc/system/local/server.conf tcpout defaultGroup cluster
+    crudini --set /opt/splunk/etc/system/local/outputs.conf tcpout:cluster indexerDiscovery cluster
+    crudini --set /opt/splunk/etc/system/local/outputs.conf tcpout defaultGroup cluster
 
   fi
   if [ "$ROLE" = "SPLUNK-IDXC-MASTER" ]; then
